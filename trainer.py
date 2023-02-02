@@ -1,5 +1,6 @@
 import os
 from ogb.nodeproppred import Evaluator, PygNodePropPredDataset
+#from ogb.nodeproppred import Evaluator, NodePropPredDataset
 
 import numpy as np
 import torch
@@ -8,7 +9,7 @@ from sklearn.metrics import f1_score
 from torch.profiler import ProfilerActivity, profile
 from torch_geometric.transforms import ToSparseTensor, ToUndirected
 
-from GraphSampling import *
+#from GraphSampling import *
 from LP.LP_Adj import LabelPropagation_Adj
 from Precomputing import *
 
@@ -16,11 +17,11 @@ from Precomputing import *
 def load_data(dataset_name, to_sparse=True):
     if dataset_name in ["ogbn-products", "ogbn-papers100M", "ogbn-arxiv"]:
         root = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "..", "dataset", dataset_name
+            os.path.dirname(os.path.realpath(__file__)), "..", "datasets", dataset_name
         )
         T = ToSparseTensor() if to_sparse else lambda x: x
         if to_sparse and dataset_name == "ogbn-arxiv":
-            T = lambda x: ToSparseTensor()(ToUndirected()(x))
+            T = lambda x: ToSparseTensor(remove_edge_index=False)(ToUndirected()(x))
         dataset = PygNodePropPredDataset(name=dataset_name, root=root, transform=T)
         processed_dir = dataset.processed_dir
         split_idx = dataset.get_idx_split()
@@ -156,6 +157,7 @@ class trainer(object):
                     self.split_masks["train"],
                     pre_process=True,
                     alpha=args.GAMLP_alpha,
+                    processed_dir = self.processed_dir
                 )
             elif args.GAMLP_type == "JK":
                 self.model = JK_GAMLP(

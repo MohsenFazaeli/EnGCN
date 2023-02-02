@@ -148,6 +148,7 @@ class BaseOptions:
 
         parser.add_argument("--SLE_threshold", type=float, default=0.9)
         parser.add_argument("--num_mlp_layers", type=int, default=3)
+        parser.add_argument("--mlp_residual", type=bool, default=True)
         parser.add_argument("--use_batch_norm", type=bool, default=True)
         parser.add_argument("--num_heads", type=int, default=1)
         parser.add_argument("--use_label_mlp", type=bool, default=True)

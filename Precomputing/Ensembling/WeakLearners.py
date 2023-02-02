@@ -86,6 +86,7 @@ class MLP_SLE(torch.nn.Module):
             args.dim_hidden,
             args.num_classes,
             args.num_mlp_layers,
+            args.mlp_residual,
             args.dropout,
             args.use_batch_norm,
         )
@@ -160,13 +161,14 @@ class MLP_SLE(torch.nn.Module):
 
 class Inner_MLP(torch.nn.Module):
     def __init__(
-        self, in_dim, hidden_dim, out_dim, num_layers, dropout, use_batch_norm
+        self, in_dim, hidden_dim, out_dim, num_layers, residual, dropout, use_batch_norm
     ):
         super(Inner_MLP, self).__init__()
         self.linear_list = torch.nn.ModuleList()
         self.batch_norm_list = torch.nn.ModuleList()
         self.dropout = dropout
         self.num_layers = num_layers
+        self.residual = residual
         self.use_batch_norm = use_batch_norm
 
         self.linear_list.append(Linear(in_dim, hidden_dim))
@@ -179,6 +181,10 @@ class Inner_MLP(torch.nn.Module):
     def forward(self, x):
         for i in range(self.num_layers - 1):
             x = self.linear_list[i](x)
+            if i == 0:
+                x_ = x
+            if self.residual and i>0:
+                x = x + x_
             if self.use_batch_norm:
                 x = self.batch_norm_list[i](x)
             x = F.relu(x)

@@ -188,7 +188,8 @@ class EnGCN(torch.nn.Module):
             x_train, y_emb_train, pesudo_labels_train
         )
         train_loader = torch.utils.data.DataLoader(
-            train_set, batch_size=self.batch_size, num_workers=8, pin_memory=True
+            #train_set, batch_size=self.batch_size, num_workers=8, pin_memory=True
+            train_set, batch_size=self.batch_size, num_workers=0, pin_memory=True
         )
         best_valid_acc = 0.0
         use_label_mlp = self.use_label_mlp

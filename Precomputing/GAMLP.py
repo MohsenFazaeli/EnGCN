@@ -138,8 +138,8 @@ class FeedForwardNetII(nn.Module):
         return x
 
 class R_GAMLP(PrecomputingBase):  # recursive GAMLP
-    def __init__(self, args, data, train_idx, input_drop=0.0, att_dropout=0.0, alpha=0.5, n_layers_1=2, n_layers_2=2, act="relu", pre_process=False, residual=False,pre_dropout=False,bns=False):
-        super(R_GAMLP, self).__init__(args, data, train_idx)
+    def __init__(self, args, data, train_idx, input_drop=0.0, att_dropout=0.0, alpha=0.5, n_layers_1=2, n_layers_2=2, act="relu", pre_process=False, residual=False,pre_dropout=False,bns=False, processed_dir = ""):
+        super(R_GAMLP, self).__init__(args, data, train_idx, processed_dir)
 
         num_hops = self.num_layers + 1
         nfeat = args.num_feats
