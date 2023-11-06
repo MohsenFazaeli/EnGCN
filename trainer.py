@@ -5,6 +5,7 @@ from ogb.nodeproppred import Evaluator, PygNodePropPredDataset
 import numpy as np
 import torch
 import torch_geometric.datasets
+from ogb.nodeproppred import Evaluator, PygNodePropPredDataset
 from sklearn.metrics import f1_score
 from torch.profiler import ProfilerActivity, profile
 from torch_geometric.transforms import ToSparseTensor, ToUndirected
@@ -70,7 +71,7 @@ def idx2mask(idx, N_nodes):
 
 
 class trainer(object):
-    def __init__(self, args):
+    def __init__(self, args, trial=None):
 
         self.dataset = args.dataset
         self.device = torch.device(f"cuda:{args.cuda_num}" if args.cuda else "cpu")
@@ -88,6 +89,9 @@ class trainer(object):
             self.loss_op = torch.nn.BCEWithLogitsLoss()
         else:
             self.loss_op = torch.nn.NLLLoss()
+
+        if self.type_model == "EnGCN":
+            args.tosparse = True
 
         (
             self.data,
@@ -148,6 +152,7 @@ class trainer(object):
                 args,
                 self.data,
                 self.evaluator,
+                trial=trial,
             )
         elif self.type_model == "GAMLP":
             if args.GAMLP_type == "R":

@@ -85,9 +85,7 @@ class GradientSampler:
         row, col = data.edge_index[0], data.edge_index[1]
         edge_attr = torch.ones(row.size(0), requires_grad=True).to(data.x.device)
         # edge_attr = torch.range(0, self.E, dtype=torch.long, requires_grad=True).to(data.x.device)
-        self.adj = SparseTensor(
-            row=row, col=col, value=edge_attr, sparse_sizes=(self.N, self.N)
-        )
+        self.adj = SparseTensor(row=row, col=col, value=edge_attr, sparse_sizes=(self.N, self.N))
 
     def __reset_params__(self):
         raise NotImplementedError
@@ -203,9 +201,7 @@ class GradientSampling(_GraphSampling):
                 out = F.log_softmax(out, dim=-1)
                 loss = loss_op(out[batch.train_mask], batch.y[batch.train_mask])
             else:
-                loss = loss_op(
-                    out[batch.train_mask], batch.y[batch.train_mask].type_as(out)
-                )
+                loss = loss_op(out[batch.train_mask], batch.y[batch.train_mask].type_as(out))
 
             weight = 1.0 / self.train_loader.prob[batch.node_idx[batch.train_mask]]
             weight = weight.to(device)
@@ -251,7 +247,7 @@ class GradientSampling(_GraphSampling):
         #     plot = sns.histplot(self.train_loader.grads)
         #     fig = plot.get_figure()
         #     fig.savefig("./figs/grads_%d.png" % epoch)
-            # plot.clf()
+        # plot.clf()
 
         return total_loss / self.num_steps, total_correct / train_size, self.train_loader.grads
 

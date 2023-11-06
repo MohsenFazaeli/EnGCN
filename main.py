@@ -57,9 +57,7 @@ def main(args):
             else:
                 t = os.path.getmtime(path_json)
                 tstr = datetime.fromtimestamp(t).strftime("%Y_%m_%d_%H_%M_%S")
-                os.rename(
-                    path_json, os.path.join(filedir, filename + "_" + tstr + ".json")
-                )
+                os.rename(path_json, os.path.join(filedir, filename + "_" + tstr + ".json"))
         if resume_seed >= args.N_exp:
             print("Training already finished!")
             return
@@ -122,6 +120,7 @@ def main(args):
         "final mean and std of test acc: ",
         f"{np.mean(list_test_acc)*100:.4f} $\\pm$ {np.std(list_test_acc)*100:.4f}",
     )
+    return np.mean(list_test_acc)
 
 
 if __name__ == "__main__":
